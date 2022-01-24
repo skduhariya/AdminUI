@@ -1,0 +1,75 @@
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24"
+        class="d-inline-block align-text-top">
+      Admin UI
+    </a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row my-3">
+    <div class="col">
+      <input type="text" placeholder="Search ..." class="form-control" [(ngModel)]="searchVal">
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col"><input type="checkbox" class="form-check-input" [(ngModel)]="masterSelected"
+                name="list_name" value="m1" (change)="checkUncheckAll()" /></th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of members | slice: (page-1) * pageSize : page * pageSize | filterData: searchVal"
+            [ngClass]="member.isSelected ? 'checked-row':''">
+            <td><input type="checkbox" class="form-check-input" [(ngModel)]="member.isSelected" value="{{member.id}}"
+                id="chk_{{member.id}}" (change)="isAllSelected(member)" /></td>
+            <td><label for="chk_{{member.id}}" *ngIf="enableEdit !== member.id">{{member.name}}</label> <input type="text" class="form-control"
+                [(ngModel)]="member.name" *ngIf="enableEdit === member.id" /></td>
+            <td><label for="chk_{{member.id}}" *ngIf="enableEdit !== member.id">{{member.email}}</label> <input type="email" class="form-control"
+                [(ngModel)]="member.email" *ngIf="enableEdit === member.id"></td>
+            <td><label for="chk_{{member.id}}" *ngIf="enableEdit !== member.id">{{member.role}}</label> <input type="text" class="form-control"
+                [(ngModel)]="member.role" *ngIf="enableEdit === member.id"></td>
+            <td>
+              <div *ngIf="enableEdit !== member.id">
+                <span class="icon" (click)="editRow(member)">
+                  <fa-icon [icon]="pencilIcon" [styles]="{'stroke': '#ff9800', 'color': '#ff9800'}"></fa-icon>
+                </span> &nbsp; &nbsp;
+                <span class="icon" (click)="deleteRow(member)">
+                  <fa-icon [icon]="deleteIcon" [styles]="{'stroke': '#e91e63', 'color': '#e91e63'}"></fa-icon>
+                </span>
+              </div>
+
+              <div *ngIf="enableEdit === member.id">
+                <span class="icon" (click)="enableEdit = ''">
+                  <fa-icon [icon]="saveIcon" [styles]="{'stroke': '#4caf50', 'color': '#4caf50'}"></fa-icon>
+                </span> &nbsp; &nbsp;
+                <span class="icon" (click)="cancelEdit()">
+                  <fa-icon [icon]="calcelIcon" [styles]="{'stroke': '#e91e63', 'color': '#e91e63'}"></fa-icon>
+                </span>
+              </div>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-danger" (click)="deleteSelected()">Delete Selected</button>
+    </div>
+    <div class="col">
+      <ngb-pagination class="d-flex justify-content-end" [(page)]="page" [pageSize]="pageSize" [maxSize]="5"
+        [collectionSize]="members.length" [boundaryLinks]="true"></ngb-pagination>
+    </div>
+  </div>
+</div>
